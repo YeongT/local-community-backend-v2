@@ -1,3 +1,3 @@
-# Local-Community-Backend-v2 [![Build Status](https://app.travis-ci.com/YeongT/local-community-backend-v2.svg?branch=main)](https://app.travis-ci.com/YeongT/local-community-backend-v2)
+# Local-Community-Backend-v2 [![CircleCI](https://circleci.com/gh/YeongT/local-community-backend-v2/tree/main.svg?style=svg)](https://circleci.com/gh/YeongT/local-community-backend-v2/tree/main)
 
-- 로컬 커뮤니티 백엔드 리팩토링
+- 로컬 커뮤니티 백엔드가 리팩토링되고 있습니다.
