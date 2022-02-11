@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  description: This is api docs for project-backend
+  version: 1.0.0
+  title: Project-Backend
+  termsOfService: https://www.loadover.me/terms/
+  contact:
+    email: help@loadover.me
+tags:
+  - name: account
+    description: User Account Management API
+paths:
+  /auth/register:
+    post:
+      tags:
+        - account
+      summary: User Register
+      description: api node for generating user account
+      operationId: createUser
+      security:
+        - BasicAuth: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: name of user account
+                  type: string
+                email:
+                  description: email of user account
+                  type: string
+                password:
+                  description: password of user account
+                  type: string
+                  format: password
+                phone:
+                  description: telnumber of user account
+                  type: string
+              required:
+                - name
+                - email
+                - password
+                - phone
+      responses:
+        "200":
+          description: account generated and verification email sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiTokenResult"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/apiTokenResult"
+        "403":
+          $ref: "#/components/responses/NotAuthorized"
+        "409":
+          description: email client provided duplicated.
+        "412":
+          $ref: "#/components/responses/FormatError"
+        "424":
+          $ref: "#/components/responses/EmailFailed"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        default:
+          $ref: "#/components/responses/DefaultModel"
+servers:
+  - url: https://api.loadover.me/
+    description: Release Server
+  - url: http://localhost:5000/
+    description: Development Server
+components:
+  responses:
+    NotAuthorized:
+      description: >
+        Request denied because you are not authorized.
+        Please send correct authorization header.
+    LoginDenied:
+      description: user action denied because account closed.
+    FormatError:
+      description: data client provided doesn't satisfy format.
+    EmailFailed:
+      description: >
+        account generated but verification email wasn't sent.
+        Please resend verification email in application.
+    ServerError:
+      description: api server connection is unstable (cause of network status)
+    DefaultModel:
+      description: default response model
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiResult"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/apiResult"
+  securitySchemes:
+    JWTAuth:
+      type: apiKey
+      name: authorization
+      in: header
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    apiResult:
+      type: object
+      properties:
+        statusCode:
+          type: number
+        bodymsg:
+          type: string
+        output:
+          nullable: true
+          type: object
+        error:
+          nullable: true
+          type: string
+    apiTokenResult:
+      type: object
+      properties:
+        statusCode:
+          type: number
+        bodymsg:
+          type: string
+        output:
+          nullable: true
+          type: object
+          properties:
+            token:
+              type: object
+              properties:
+                access: 
+                  type: string
+                refresh:
+                  type: string
+        error:
+          type: string

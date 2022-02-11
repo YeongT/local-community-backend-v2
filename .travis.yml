@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - 17.2.0
+before_install:
+  - yarn install
+branches:
+  only:
+    - master
+    - develop
+script: 'yarn build'
+notifications:
+  email:
+    recipients:
+      - travisci@loadover.me
+    on_success: change # default: change
+    on_failure: always # default: always
