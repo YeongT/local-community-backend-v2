@@ -7,8 +7,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon -e ts,js,json,yaml,html,env --exec yarn ts-node server/serve.ts",
-    "start": "pm2 delete all; pm2 start build/server/serve.js",
-    "build": "rm -rf build; tsc --build"
+    "start": "pm2 start build/server/serve.js",
+    "copy": "cp src/swagger.yaml build/src/swagger.yaml",
+    "build": "rm -rf build && tsc --build"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
@@ -25,7 +26,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "nodemon": "^2.0.7",
-    "pm2": "^5.1.2",
     "prettier": "^2.3.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
