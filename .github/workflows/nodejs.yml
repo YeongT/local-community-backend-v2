@@ -12,12 +12,6 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [17.2.0]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
