@@ -26,6 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: pm2 delete all
+      - run: chmod +x genEnvSetupFile.sh
       - run: ./genEnvSetupFile.sh $DO_NOT_USE_ENV_FILE $PORT $DB_HOST $DB_NAME $DB_USER_ID $DB_USER_PW
       - run: pm2 start __generated_environment.js -env-production
   build:
