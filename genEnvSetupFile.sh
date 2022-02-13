@@ -1,6 +1,4 @@
 #!/bin/bash
-chmod +x genEnvSetupFile.sh
-
 cat <<EOF > __generated_environment.js
 'use strict';
 
