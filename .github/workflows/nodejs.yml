@@ -27,6 +27,4 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn build
-      - run: mkdir build/env
-          cp env/.env build/env/.env
-          cp src/swagger.yaml build/src/swagger.yaml
+      - run: cp src/swagger.yaml build/src/swagger.yaml
