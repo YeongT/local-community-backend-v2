@@ -5,7 +5,15 @@ name: Deploy to Ubuntu Server
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+
+env:
+  PORT: 5000
+  DO_NOT_USE_ENV_FILE: true
+  DB_HOST: ${{ secrets.databaseHost }}
+  DB_NAME: ${{ secrets.databaseName }}
+  DB_USER_ID: ${{ secrets.databaseAuthID }}
+  DB_USER_PW: ${{ secrets.databaseAuthPW }}
 
 jobs:
   build:
