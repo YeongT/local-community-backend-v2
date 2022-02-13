@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon -e ts,js,json,yaml,html,env --exec yarn ts-node server/serve.ts",
-    "start": "pm2 stop all; pm2 start build/server/serve.js",
+    "start": "pm2 delete all; pm2 start build/server/serve.js",
     "build": "rm -rf build; tsc --build"
   },
   "devDependencies": {
