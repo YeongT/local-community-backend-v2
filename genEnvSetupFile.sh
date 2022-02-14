@@ -9,9 +9,6 @@ module.exports = {
             script: "./build/",
             watch: true,
             env: {
-                "NODE_ENV": "development"
-            },
-            env_production: {
                 "NODE_ENV": "production",
                 "DO_NOT_USE_ENV_FILE": "$1",
                 "PORT": "$2",

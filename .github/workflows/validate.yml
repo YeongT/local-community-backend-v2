@@ -1,10 +1,10 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Deploy to Ubuntu Server
+name: Validate Project Before Merge
 
 on:
-  push:
+  pull_request:
     branches: [main]
 
 env:
@@ -16,8 +16,8 @@ env:
   DB_USER_PW: ${{ secrets.databaseAuthPW }}
 
 jobs:
-  deploy:
-    runs-on: self-hosted
+  test:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -25,7 +25,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn install # install dependency
+      - run: yarn install; npm install -g pm2 # install dependency
+      - run: pm2 link ${{ secrets.PM2_PARAM_1 }} ${{ secrets.PM2_PARAM_2 }} # link to pm2 monitor
       - run: echo "console.log('hello')" >> temp.js; pm2 start temp.js; pm2 delete all; # stop all started process
       - run: chmod +x genEnvSetupFile.sh; ./genEnvSetupFile.sh $DO_NOT_USE_ENV_FILE $PORT $DB_HOST $DB_NAME $DB_USER_ID $DB_USER_PW # generate pm2 env config js file
       - run: pm2 start __generated_environment.js # load env valuables to pm2 process
