@@ -25,11 +25,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn install; npm install -g pm2 # install dependency
-      - run: pm2 link ${{ secrets.PM2_PARAM_1 }} ${{ secrets.PM2_PARAM_2 }} # link to pm2 monitor
-      - run: echo "console.log('hello')" >> temp.js; pm2 start temp.js; pm2 delete all; # stop all started process
+      - run: yarn install; yarn add pm2 --global; yarn pm2 update # install dependency
+      - run: yarn pm2 link ${{ secrets.PM2_PARAM_1 }} ${{ secrets.PM2_PARAM_2 }} # link to pm2 monitor
+      - run: echo "console.log('hello')" >> temp.js; yarn pm2 start temp.js; yarn pm2 delete all; # stop all started process
       - run: chmod +x genEnvSetupFile.sh; ./genEnvSetupFile.sh $DO_NOT_USE_ENV_FILE $PORT $DB_HOST $DB_NAME $DB_USER_ID $DB_USER_PW # generate pm2 env config js file
-      - run: pm2 start __generated_environment.js # load env valuables to pm2 process
+      - run: yarn pm2 start __generated_environment.js # load env valuables to pm2 process
       - run: yarn build
       - run: yarn copy
       - run: yarn deploy

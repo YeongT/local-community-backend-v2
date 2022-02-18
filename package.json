@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon -e ts,js,json,yaml,html,env --exec yarn ts-node server/serve.ts",
-    "deploy": "pm2 start build/server/serve.js",
+    "deploy": "yarn pm2 start build/server/serve.js",
     "copy": "cp src/swagger.yaml build/src/swagger.yaml",
     "build": "rm -rf build && tsc --build",
     "start": "yarn copy && node build/server/serve.js"
