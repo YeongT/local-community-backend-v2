@@ -1,16 +1,11 @@
 import { Response as Res } from 'express';
-import { Error } from 'mongoose';
-
-interface TokenPair {
-  access: string;
-  refresh: string;
-}
+import { TokenPair } from '../jwtauth/jwtCommon';
 
 interface Response {
   returnCode: number;
   bodymsg: string;
   output: TokenPair | null;
-  error: string | null;
+  error: object | string | null;
 }
 
 const _response: Response = {
@@ -25,7 +20,7 @@ const respond = (
   returnCode: number,
   bodymsg: string,
   output: TokenPair | null,
-  error: string | null,
+  error: object | string | null,
 ): Response => {
   _response.returnCode = returnCode;
   _response.bodymsg = bodymsg;

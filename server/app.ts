@@ -17,13 +17,13 @@ const app = express();
 let DBError: string | null = 'WAIT_DB_CONNECTION',
   DBAttempt = 0;
 
-//OPEN LOCAL ENV FILE WHEN NOT RUNNING IN CI/CD
+//#OPEN LOCAL ENV FILE WHEN NOT RUNNING IN CI/CD
 if (!(process.env.DO_NOT_USE_ENV_FILE === 'true')) {
   statSync(path.join(__dirname, '../env/.env'));
   config({ path: path.join(__dirname, '../env/.env') });
 }
 
-//OPEN SWAGGER_UI DOCS
+//#OPEN SWAGGER_UI DOCS
 statSync(path.join(__dirname, '../src/swagger.yaml'));
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(YAML.load(path.join(__dirname, '../src/swagger.yaml'))));
 
@@ -43,7 +43,8 @@ const dbInfo = {
   host: process.env.DB_HOST || '',
   name: process.env.DB_NAME || '',
 };
-//#DATABASE CONNECT FUNCTION
+
+//# DATABASE CONNECT FUNCTION
 const DBConnect = (): void => {
   connect(
     `mongodb+srv://${dbInfo.id}:${dbInfo.pw}@${dbInfo.host}/${dbInfo.name}?authSource=admin&retryWrites=true&w=majority&ssl=true`,

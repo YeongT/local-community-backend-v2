@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { DBError } from '../server/app';
+import { emailCheckAPI } from './auth/emailCheck';
 import registerAPI from './auth/register';
 
 const router = Router();
@@ -16,6 +17,7 @@ router.get('/', (req: Request, res: Response) => {
   res.end(`Database Connection : ${DB_STATUS}`);
 });
 
+router.use('/auth/emailCheck', emailCheckAPI);
 router.use('/auth/register', registerAPI);
 
 export default router;
