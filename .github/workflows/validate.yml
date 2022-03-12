@@ -14,6 +14,8 @@ env:
   DB_NAME: ${{ secrets.databaseName }}
   DB_USER_ID: ${{ secrets.databaseAuthID }}
   DB_USER_PW: ${{ secrets.databaseAuthPW }}
+  BASIC_AUTH: ${{ secrets.basicAuthKey }}
+  JWT_SECRET: ${{ secrets.jwtTokenSecret }}
 
 jobs:
   test:
@@ -27,7 +29,7 @@ jobs:
           cache: 'yarn'
       - run: yarn install; npm install pm2 -g; pm2 update # install dependency
       - run: echo "console.log('hello')" >> temp.js; pm2 start temp.js; pm2 delete all; # stop all started process
-      - run: chmod +x genEnvSetupFile.sh; ./genEnvSetupFile.sh $DO_NOT_USE_ENV_FILE $PORT $DB_HOST $DB_NAME $DB_USER_ID $DB_USER_PW # generate pm2 env config js file
+      - run: chmod +x genEnvSetupFile.sh; ./genEnvSetupFile.sh $DO_NOT_USE_ENV_FILE $PORT $DB_HOST $DB_NAME $DB_USER_ID $DB_USER_PW $BASIC_AUTH $JWT_SECRET # generate pm2 env config js file
       - run: pm2 start __generated_environment.js # load env valuables to pm2 process
       - run: yarn build
       - run: yarn copy
