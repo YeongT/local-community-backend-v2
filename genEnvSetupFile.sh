@@ -15,6 +15,8 @@ module.exports = {
                 "DB_NAME": "$4",
                 "DB_USER_ID": "$5",
                 "DB_USER_PW": "$6",
+                "REGISTER_BASIC_AUTH_KEY": "$7",
+                "JWT_TOKEN_SECRETKEY": "$8"
             }
         }
     ]
