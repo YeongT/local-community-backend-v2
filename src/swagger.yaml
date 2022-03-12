@@ -10,6 +10,43 @@ tags:
   - name: account
     description: User Account Management API
 paths:
+  /auth/emailCheck:
+    post:
+      tags:
+        - account
+      summary: Email Duplication Check
+      description: api node for check email duplication
+      operationId: emailCheck
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: email of user account
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '200':
+          description: provided email can be used.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apiResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/apiResult'
+        '409':
+          description: email client provided duplicated.
+        '412':
+          $ref: '#/components/responses/FormatError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        default:
+          $ref: '#/components/responses/DefaultModel'
   /auth/register:
     post:
       tags:
@@ -25,12 +62,10 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  description: name of user account
-                  type: string
                 email:
                   description: email of user account
                   type: string
+                  format: email
                 password:
                   description: password of user account
                   type: string
@@ -38,33 +73,37 @@ paths:
                 phone:
                   description: telnumber of user account
                   type: string
+                  format: phone
+                name:
+                  description: name of user account
+                  type: string
               required:
                 - name
                 - email
                 - password
                 - phone
       responses:
-        "200":
+        '200':
           description: account generated and verification email sent.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/apiTokenResult"
+                $ref: '#/components/schemas/apiTokenResult'
             application/xml:
               schema:
-                $ref: "#/components/schemas/apiTokenResult"
-        "403":
-          $ref: "#/components/responses/NotAuthorized"
-        "409":
+                $ref: '#/components/schemas/apiTokenResult'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '409':
           description: email client provided duplicated.
-        "412":
-          $ref: "#/components/responses/FormatError"
-        "424":
-          $ref: "#/components/responses/EmailFailed"
-        "500":
-          $ref: "#/components/responses/ServerError"
+        '412':
+          $ref: '#/components/responses/FormatError'
+        '424':
+          $ref: '#/components/responses/EmailFailed'
+        '500':
+          $ref: '#/components/responses/ServerError'
         default:
-          $ref: "#/components/responses/DefaultModel"
+          $ref: '#/components/responses/DefaultModel'
 servers:
   - url: https://api.loadover.me/
     description: Release Server
@@ -93,10 +132,10 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/apiResult"
+            $ref: '#/components/schemas/apiResult'
         application/xml:
           schema:
-            $ref: "#/components/schemas/apiResult"
+            $ref: '#/components/schemas/apiResult'
   securitySchemes:
     JWTAuth:
       type: apiKey
@@ -133,9 +172,10 @@ components:
             token:
               type: object
               properties:
-                access: 
+                access:
                   type: string
                 refresh:
                   type: string
         error:
+          nullable: true
           type: string

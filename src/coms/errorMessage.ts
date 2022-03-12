@@ -20,11 +20,18 @@ const ERR_NOT_AUTH: ErrorMessage = {
 
 const ERR_PARAM: ErrorMessage = {
   code: 412,
-  msg: 'ERR_PARAMETER_NOT_ACCEPTED',
+  msg: 'ERR_PARAMETERS_NOT_ACCEPTED',
+};
+
+const ERR_EMAIL_DUPLICATION: ErrorMessage = {
+  code: 409,
+  msg: 'ERR_EMAIL_ALREADY_IN_USE',
 };
 
 const configErrors = {
   'HTTP-BASIC': 'ERR_MISSING_HTTP_BASIC_AUTH_KEY',
+  'JWT-SECRET': 'ERR_MISSING_JWT_TOKEN_SECRET_KEY',
+  'JWT-GENERATE': 'ERR_JWT_TOKEN_GENERATE_FAILED',
 };
 
-export { ERR_SYS, ERR_DB, ERR_NOT_AUTH, ERR_PARAM, configErrors };
+export { ERR_SYS, ERR_DB, ERR_NOT_AUTH, ERR_PARAM, ERR_EMAIL_DUPLICATION, configErrors };
