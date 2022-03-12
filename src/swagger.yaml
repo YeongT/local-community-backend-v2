@@ -68,6 +68,8 @@ paths:
 servers:
   - url: https://api.loadover.me/
     description: Release Server
+  - url: https://www.api.loadover.me/
+    description: Release Backup Server
   - url: http://localhost:5000/
     description: Development Server
 components:
@@ -75,7 +77,7 @@ components:
     NotAuthorized:
       description: >
         Request denied because you are not authorized.
-        Please send correct authorization header.
+        Please send request with authorization header.
     LoginDenied:
       description: user action denied because account closed.
     FormatError:
