@@ -2,12 +2,13 @@ import { Request, Response, Router } from 'express';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { DBError } from '../../server/app';
 import respond from '../coms/respondClient';
-import { validators, validatorErrorChecker } from '../coms/validator';
+import { validatorErrorChecker, validators } from '../coms/validator';
 import { configErrors, ERR_DB, ERR_NOT_AUTH, ERR_SYS } from '../coms/errorMessage';
 import { getNewSignedJWTPair as jwtSign } from '../jwtauth/jwtSign';
 import { emailDuplicationCheck } from './emailCheck';
 
 import User from '../../models/user';
+
 const router = Router();
 
 router.post(
@@ -52,7 +53,7 @@ router.post(
       },
     });
 
-    //# GENERATE NEW USER JWTTOKEN
+    //# GENERATE NEW USER JWT TOKEN
     const secretKey = process.env.JWT_TOKEN_SECRETKEY;
     if (secretKey === undefined)
       return respond(res, ERR_SYS.code, ERR_SYS.msg, null, configErrors['JWT-SECRET']);

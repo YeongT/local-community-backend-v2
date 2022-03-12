@@ -1,7 +1,6 @@
 #!/bin/bash
 cat <<EOF > __generated_environment.js
 'use strict';
-
 module.exports = {
     apps: [
         {
