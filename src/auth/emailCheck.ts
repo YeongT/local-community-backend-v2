@@ -8,7 +8,7 @@ import User from '../../models/user';
 const router = Router();
 
 const emailDuplicationCheck = async (res: Response, email: string) => {
-  const _user = await User.findOne({ 'account.email': email }, { _id: 0 });
+  const _user = await User.findOne({ 'account.email': `${email}` }, { _id: 0 });
   if (!(_user === null || _user === undefined))
     return respond(res, ERR_EMAIL_DUPLICATION.code, ERR_EMAIL_DUPLICATION.msg, null, null);
   return null;
