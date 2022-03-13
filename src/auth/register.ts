@@ -1,14 +1,13 @@
 import { Request, Response, Router } from 'express';
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { DBError } from '../../server/app';
-import respond from '../coms/respondClient';
+import { respond } from '../coms/respondClient';
 import { validatorErrorChecker, validators } from '../coms/validator';
 import { configErrors, ERR_DB, ERR_NOT_AUTH, ERR_SYS } from '../coms/errorMessage';
-import { getNewSignedJWTPair as jwtSign } from '../jwtauth/jwtSign';
 import { emailDuplicationCheck } from './emailCheck';
+import jwtSign from '../jwtauth/jwtSign';
 
-import User from '../../models/user';
-
+import UserModel from '../../models/user';
 const router = Router();
 
 router.post(
@@ -29,8 +28,8 @@ router.post(
       return respond(res, ERR_NOT_AUTH.code, ERR_NOT_AUTH.msg, null, null);
 
     //# CHECK PARAMETER ERROR & EMAIL DUPLICATION CHECK
-    if (validatorErrorChecker(req, res) !== null) return;
-    if ((await emailDuplicationCheck(res, req.body.email)) !== null) return;
+    if (!validatorErrorChecker(req, res)) return;
+    if (!(await emailDuplicationCheck(res, req.body.email))) return;
 
     //# ENCRYPT USER PASSWORD WITH RANDOM SALT
     const salt = randomBytes(32);
@@ -39,7 +38,7 @@ router.post(
       return respond(res, ERR_SYS.code, 'ERR_PASSWORD_ENCRYPT_FAILED', null, encryptPassword);
 
     //# SAVE USER ACCOUNT ON DATABASE
-    const createUser = new User({
+    const createUser = new UserModel({
       account: {
         email: req.body.email,
       },
@@ -57,7 +56,7 @@ router.post(
     const secretKey = process.env.JWT_TOKEN_SECRETKEY;
     if (secretKey === undefined)
       return respond(res, ERR_SYS.code, ERR_SYS.msg, null, configErrors['JWT-SECRET']);
-    const { jwtToken, jwtError } = jwtSign({ email: req.body.email }, '5d', secretKey);
+    const { jwtToken, jwtError } = await jwtSign({ email: `${req.body.email}` }, '5d', secretKey);
     if (jwtError !== null) return respond(res, ERR_SYS.code, configErrors['JWT-GENERATE'], null, jwtError);
 
     //# SAVE USER ACCOUNT INTO DATABASE
