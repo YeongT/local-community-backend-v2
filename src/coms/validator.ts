@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { validationResult, body as validateBody } from 'express-validator';
-import respond from './respondClient';
-import { ERR_PARAM } from '../coms/errorMessage';
+import { body as validateBody, validationResult } from 'express-validator';
+import { respond } from './respondClient';
+import { ERR_PARAM } from './errorMessage';
 
 const validators = {
   email: validateBody('email')
@@ -31,7 +31,7 @@ const validators = {
     .withMessage('Parameter must contain `phone`')
     .bail()
     .custom((value) => {
-      const regexPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+      const regexPhone = /^01([0-9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
       const isNotValidPhone = !regexPhone.test(value);
       if (isNotValidPhone) {
         return Promise.reject('Parameter must have valid phone (Example : 010-1234-1234)');
@@ -56,11 +56,11 @@ const validators = {
     }),
 };
 
-const validatorErrorChecker = (req: Request, res: Response) => {
+const validatorErrorChecker = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
 
-  if (!errors.isEmpty()) return respond(res, ERR_PARAM.code, ERR_PARAM.msg, null, errors['errors']);
-  return null;
+  if (!errors.isEmpty()) respond(res, ERR_PARAM.code, ERR_PARAM.msg, null, errors['errors']);
+  return errors.isEmpty();
 };
 
 export { validators, validatorErrorChecker };
