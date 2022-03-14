@@ -84,7 +84,7 @@ paths:
                 - phone
       responses:
         '200':
-          description: account generated and verification email sent.
+          description: account generated.
           content:
             application/json:
               schema:
@@ -100,6 +100,50 @@ paths:
           $ref: '#/components/responses/FormatError'
         '424':
           $ref: '#/components/responses/EmailFailed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        default:
+            $ref: '#/components/responses/DefaultModel'
+  /auth/login:
+    post:
+      tags:
+        - account
+      summary: User Login
+      description: api node for signing in user account
+      operationId: loginUser
+      security:
+        - BasicAuth: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: email of user account
+                  type: string
+                  format: email
+                password:
+                  description: password of user account
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: access & refresh token has been generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apiTokenResult'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/apiTokenResult'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '412':
+          $ref: '#/components/responses/FormatError'
         '500':
           $ref: '#/components/responses/ServerError'
         default:
