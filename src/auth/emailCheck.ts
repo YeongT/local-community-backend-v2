@@ -4,12 +4,12 @@ import { respond } from '../coms/respondClient';
 import { validatorErrorChecker, validators } from '../coms/validator';
 import { ERR_DB, ERR_EMAIL_DUPLICATION } from '../coms/errorMessage';
 
-import UserModel from '../../models/user';
+import { UserModel, UserObject } from '../../models/user';
 
 const router = Router();
 
 const emailDuplicationCheck = async (res: Response, email: string): Promise<boolean> => {
-  const _user = await UserModel.findOne({ 'account.email': `${email}` }, { _id: 0 });
+  const _user: UserObject | null = await UserModel.findOne({ 'account.email': `${email}` }, { _id: 0 });
   if (_user !== null) respond(res, ERR_EMAIL_DUPLICATION.code, ERR_EMAIL_DUPLICATION.msg, null, null);
   return _user === null;
 };

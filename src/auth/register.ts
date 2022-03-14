@@ -7,7 +7,7 @@ import { configErrors, ERR_DB, ERR_NOT_AUTH, ERR_SYS } from '../coms/errorMessag
 import { emailDuplicationCheck } from './emailCheck';
 import jwtSign from '../jwtauth/jwtSign';
 
-import UserModel from '../../models/user';
+import { UserModel } from '../../models/user';
 const router = Router();
 
 router.post(
