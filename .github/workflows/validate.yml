@@ -43,4 +43,13 @@ jobs:
           JWT_TOKEN_SECRETKEY: ${{ secrets.jwtTokenSecret }}
           REGISTER_BASIC_AUTH_KEY: ${{ secrets.registerAuthKey }}
           LOGIN_BASIC_AUTH_KEY: ${{ secrets.loginAuthKey }}
-
+      - name: Deploy Validation Request
+        id: serverStatusCheck
+        uses: fjogeleit/http-request-action@v1.9.1
+        with:
+          url: 'http://localhost:5000/status'
+          method: 'GET'
+        run: echo ${{ steps.serverStatusCheck.outputs.response }}
+      - name: Exit With Failure if validation has been failed
+        run: exit 500
+        if: ${{ steps.serverStatusCheck.outputs.response }} == 500
