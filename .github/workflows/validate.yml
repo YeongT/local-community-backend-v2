@@ -43,4 +43,3 @@ jobs:
           JWT_TOKEN_SECRETKEY: ${{ secrets.jwtTokenSecret }}
           REGISTER_BASIC_AUTH_KEY: ${{ secrets.registerAuthKey }}
           LOGIN_BASIC_AUTH_KEY: ${{ secrets.loginAuthKey }}
-
