@@ -1,14 +1,14 @@
 import { Response as Res } from 'express';
 import { TokenPair } from '../jwtauth/jwtCommon';
 
-interface Response {
+interface APIResponse {
   returnCode: number;
   bodymsg: string;
   output: TokenPair | null;
-  error: object | string | null;
+  error: JSON | string | null;
 }
 
-const _response: Response = {
+const _response: APIResponse = {
   returnCode: 500,
   bodymsg: 'ERR_SERVER_FAILED_TEMPORARILY',
   output: null,
@@ -20,8 +20,8 @@ const respond = (
   returnCode: number,
   bodymsg: string,
   output: TokenPair | null,
-  error: object | string | null,
-): Response => {
+  error: JSON | string | null,
+): APIResponse => {
   _response.returnCode = returnCode;
   _response.bodymsg = bodymsg;
   _response.output = output;
@@ -30,4 +30,4 @@ const respond = (
   return _response;
 };
 
-export default respond;
+export { respond, APIResponse };

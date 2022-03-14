@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 import currentTime from '../src/coms/currentTime';
 
-const User: Schema = new Schema(
+const UserSchema: Schema = new Schema(
   {
     account: {
       email: String,
@@ -28,4 +28,4 @@ const User: Schema = new Schema(
   },
 );
 
-export default model('user', User);
+export default model('user', UserSchema);
