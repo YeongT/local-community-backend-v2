@@ -41,7 +41,7 @@ jobs:
         with:
           url: 'http://localhost:5000/status'
           method: 'GET'
-        run: echo ${{ steps.serverStatusCheck.outputs.response }}
+      - run: echo ${{ steps.serverStatusCheck.outputs.response }}
       - name: Exit With Failure if validation has been failed
         run: exit 500
         if: ${{ steps.serverStatusCheck.outputs.response }} == 500

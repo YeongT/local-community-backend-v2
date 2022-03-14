@@ -4,7 +4,7 @@ import { app } from './app';
 const port = process.env.PORT || '5000';
 
 app.set('port', port);
-const server = http.createServer(app);
+const server: http.Server = http.createServer(app);
 const onError = (error: { syscall: string; code: any }) => {
   if (error.syscall !== 'listen') throw error;
 
