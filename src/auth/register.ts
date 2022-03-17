@@ -5,7 +5,7 @@ import { respond } from '../coms/respondClient';
 import { validatorErrorChecker, validators } from '../coms/validator';
 import { configErrors, ERR_DB, ERR_NOT_AUTH, ERR_SYS } from '../coms/errorMessage';
 import { emailDuplicationCheck } from './emailCheck';
-import jwtSign from '../jwtauth/jwtSign';
+import jwtTokenSign from '../jwtauth/jwtSign';
 
 import { UserModel } from '../../models/user';
 const router = Router();
@@ -56,7 +56,7 @@ router.post(
     const secretKey = process.env.JWT_TOKEN_SECRETKEY;
     if (secretKey === undefined)
       return respond(res, ERR_SYS.code, ERR_SYS.msg, null, configErrors['JWT-SECRET']);
-    const { jwtToken, jwtError } = await jwtSign({ email: `${req.body.email}` }, '5d', secretKey);
+    const { jwtToken, jwtError } = await jwtTokenSign({ email: `${req.body.email}` }, '1d', secretKey);
     if (jwtError !== null) return respond(res, ERR_SYS.code, configErrors['JWT-GENERATE'], null, jwtError);
 
     //# SAVE USER ACCOUNT INTO DATABASE

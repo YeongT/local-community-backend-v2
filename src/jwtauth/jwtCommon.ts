@@ -4,7 +4,7 @@ interface AccessDataObject {
 
 interface RefreshDataObject {
   email: string;
-  decodable: boolean;
+  isRefreshToken: boolean;
 }
 
 interface RefreshAccessTokenDataObject {
