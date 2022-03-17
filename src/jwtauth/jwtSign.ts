@@ -22,7 +22,7 @@ const getNewSignedJWTPair = async (
   const _response: JWTResponse = { jwtToken: null, jwtError: configErrors['JWT-GENERATE'] };
   const refreshData: RefreshDataObject = {
     email: accessData.email,
-    decodable: false,
+    isRefreshToken: true,
   };
   const accessResult: JWTSignResult = await jwtSign(accessData, expiresIn, secretKey),
     refreshResult: JWTSignResult = await jwtSign(refreshData, expiresIn, secretKey);

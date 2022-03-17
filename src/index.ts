@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import { DBError } from '../server/app';
 import { emailCheckAPI } from './auth/emailCheck';
 import registerAPI from './auth/register';
+import loginAPI from './auth/login';
 import { configErrors } from './coms/errorMessage';
 
 const router = Router();
@@ -48,5 +49,6 @@ router.get('/status', (req: Request, res: Response) => {
 
 router.use('/auth/emailCheck', emailCheckAPI);
 router.use('/auth/register', registerAPI);
+router.use('/auth/login', loginAPI);
 
 export default router;

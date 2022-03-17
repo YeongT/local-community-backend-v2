@@ -142,6 +142,8 @@ paths:
                 $ref: '#/components/schemas/apiTokenResult'
         '403':
           $ref: '#/components/responses/NotAuthorized'
+        "409":
+          description: no accounts were found that match the information client entered.
         '412':
           $ref: '#/components/responses/FormatError'
         '500':
