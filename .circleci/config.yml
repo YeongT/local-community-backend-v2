@@ -42,4 +42,4 @@ workflows:
             branches:
               ignore:
                 - production
-                - github-CI
+                - github-CI # for test
