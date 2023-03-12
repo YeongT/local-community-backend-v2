@@ -1,13 +1,16 @@
 name: Build and Test
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - production
       - master
 
 jobs:
-  build:
+  build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
