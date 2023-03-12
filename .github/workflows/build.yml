@@ -24,8 +24,20 @@ jobs:
           distribution: 'oracle'
           java-version: 17
 
+      - name: Cache Load Gradle
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
       - name: Grant execute permission to Gradle wrapper
         run: chmod +x ./gradlew
+
+      - name: Cache Save Gradle
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Build with Gradle
         run: ./gradlew build --info
