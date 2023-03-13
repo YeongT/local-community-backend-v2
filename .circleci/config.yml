@@ -73,6 +73,20 @@ jobs:
       # Check Heroku Authentication
       - heroku/check-authentication:
           print-whoami: true
+      # Login To Heroku Container
+      - run:
+          name: Login To Heroku Container
+          command: heroku container:login
+      # Push Docker Image to Heroku
+      - run:
+          name: Push Docker Image to Heroku
+          command: heroku container:push -a $HEROKU_APP_NAME $HEROKU_PROCESS_TYPE
+          no_output_timeout: 1m
+      # Release Uploaded Docker Image
+      - run:
+          name: Release Uploaded Docker Image
+          command: heroku container:release -a $HEROKU_APP_NAME $HEROKU_PROCESS_TYPE
+          no_output_timeout: 1m
 
 workflows:
   version: 2
