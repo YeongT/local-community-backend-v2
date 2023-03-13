@@ -1,1 +1,1 @@
-rootProject.name = "local-community-api"
+rootProject.name = "local-community-backend-v2"
