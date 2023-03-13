@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  heroku: circleci/heroku@2.0.0
+
 jobs:
   build:
     docker:
@@ -29,9 +32,23 @@ jobs:
             - ~/.gradle
           key: v2-dependencies-{{ checksum "build.gradle.kts" }}
       # Upload builded jar file to artifact
-      - store_artifacts:
-          path: build/libs/
-          destination: build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/libs/*.jar
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - attach_workspace:
+          at: .
+      - heroku/install
+      # Check Heroku Authentication
+      - heroku/check-authentication:
+          print-whoami: true
 
 workflows:
   version: 2
@@ -42,3 +59,11 @@ workflows:
             branches:
               ignore:
                 - production
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+
