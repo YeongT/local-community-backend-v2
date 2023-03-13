@@ -45,16 +45,31 @@ jobs:
           docker_layer_caching: true
       - attach_workspace:
           at: .
+      # Create DockerFile From Jar
+      - run:
+          name: Create Dockerfile From Jar
+          command: |
+            cd build/libs
+            JAR_FILE=$(ls *.jar | grep -v plain)
+            echo "Using JAR_FILE=${JAR_FILE}"
+            cd ../..
+            echo "FROM openjdk:17-jdk" > Dockerfile
+            echo "COPY build/libs/${JAR_FILE} /app.jar" >> Dockerfile
+            echo "CMD [\"java\", \"-jar\", \"/app.jar\"]" >> Dockerfile
+      # Build Docker image
+      - run:
+          name: Build Docker Image
+          command: docker build -t $HEROKU_APP_NAME .
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - heroku-cli-cache-key
+            - heroku-cli-cache
       - heroku/install
       # Save cache for dependencies
       - save_cache:
           paths:
             - /usr/local/bin/heroku
-          key: heroku-cli-cache-key
+          key: heroku-cli-cache
       # Check Heroku Authentication
       - heroku/check-authentication:
           print-whoami: true
