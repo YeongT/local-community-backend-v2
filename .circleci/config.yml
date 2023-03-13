@@ -66,4 +66,5 @@ workflows:
             branches:
               only:
                 - master
+                - heroku-CD # for test
 
