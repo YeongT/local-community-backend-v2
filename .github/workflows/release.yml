@@ -12,5 +12,21 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Check Online
-        run: echo "check"
+      # Download the latest plain-less jar from Azure Storage
+      - name: Download Latest JAR from Azure Storage
+        run: |
+          # Get the list of files
+          FILES=$(az storage blob list --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --query "[?contains(name, '-plain.jar') == \`false\`].name" -o tsv)
+          
+          # Find the latest version of the jar file
+          LATEST=$(echo "$FILES" | grep -Eo '[0-9]+(\.[0-9]+)*' | sort -V | tail -n1)
+          
+          # Construct the file name
+          FILE=$(echo "$FILES" | grep "$LATEST" | head -n1)
+          if [ -z "$FILE" ]; then
+            echo "Jar file not found"
+            exit 1
+          else
+            # Download the file and rename it to app.jar
+            az storage blob download --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "$FILE" --file "app.jar"
+          fi
