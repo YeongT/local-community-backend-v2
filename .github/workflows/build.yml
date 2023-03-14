@@ -1,12 +1,10 @@
 name: Build and Test
 
 on:
-  push:
-    branches:
-      - production
   pull_request:
     branches:
       - production
+      - master # for test
 
 jobs:
   build-release:
@@ -44,5 +42,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          artifact-name: ${{ github.event.pull_request.head.repo.name }}-${{ github.run_id }}
+          name: ${{ github.event.pull_request.head.repo.name }}-${{ github.run_id }}
           path: build/libs/*.jar
