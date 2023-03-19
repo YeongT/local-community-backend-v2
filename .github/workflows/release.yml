@@ -27,6 +27,30 @@ jobs:
             echo "Jar file not found"
             exit 1
           else
-            # Download the file and rename it to app.jar
-            az storage blob download --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "$FILE" --file "app.jar"
+            # Download the file
+            az storage blob download --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "$FILE""
           fi
+
+      # Deploy Downloaded JAR file to test port
+      - name: "Test: execute downloaded jar file on 8080"
+        run: nohup java -jar $FILE --server.port=8080 1>$FILE_test.log 2>$FILE_test.log &
+      
+      # Check JAR File works well on test port
+      - name: "Test: service status check on test port"
+        uses: pavelsaman/website-check@v2.3
+        with:
+          url: http://localhost:8080/status
+          status_code: 200
+          redirect: true
+
+      # Kill test java process
+      - name: "Test: terminate test process"
+        run: sudo fuser -k 8080/tcp
+
+      # Kill previous java process working on release port
+      - name: Kill previous java process working on release port
+        run: sudo fuser -k 5000/tcp
+
+      # Deploy Downloaded JAR file to release port
+      - name: Deploy Downloaded JAR File to Release Port
+        run: nohup java -jar $FILE --server.port=5000 1>$FILE.log 2>$FILE_error.log &
