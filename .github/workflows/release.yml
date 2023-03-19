@@ -34,7 +34,7 @@ jobs:
         uses: pavelsaman/website-check@v2.3
         with:
           url: http://127.0.0.1:8080/status
-          status_code: 404 # for test
+          status_code: 200
           redirect: true
 
       - name: "Test: Terminate test process"
@@ -57,5 +57,5 @@ jobs:
         uses: pavelsaman/website-check@v2.3
         with:
           url: http://127.0.0.1:5000/status
-          status_code: 404 # for test
+          status_code: 200
           redirect: true
