@@ -1,9 +1,6 @@
 name: Deploy
 
 on:
-  pull_request:
-    branches:
-      - master # for deploy test
   push:
     branches:
       - production
