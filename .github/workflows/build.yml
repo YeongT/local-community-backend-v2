@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - production
+      - master # for test
 
 jobs:
   build-release:
