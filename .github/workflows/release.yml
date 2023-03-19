@@ -28,7 +28,7 @@ jobs:
             exit 1
           else
             # Download the file
-            az storage blob download --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "$FILE""
+            az storage blob download --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "$FILE"
           fi
 
       # Deploy Downloaded JAR file to test port
