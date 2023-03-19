@@ -1,0 +1,58 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      # Download the latest plain-less jar from Azure Storage
+      - name: Download the latest plain-less jar from Azure Storage
+        id: download
+        run: |
+          # Find the latest version of the jar file
+          FILE=$(az storage blob list --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --query "[?contains(name, '-plain.jar') == \`false\`].name" --output tsv | sort -V | tail -n1)
+      
+          # Download the file
+          az storage blob download --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "$FILE" --file "$FILE"
+          
+          echo "FILE=$FILE" >> $GITHUB_OUTPUT
+
+      - name: "Test: execute downloaded jar file on 8080"
+        run: sudo nohup java -jar ${{ steps.download.outputs.FILE }} --server.port=8080 1>${{ steps.download.outputs.FILE }}_test.log 2>${{ steps.download.outputs.FILE }}_test.log &
+      
+      - name: "Test: Wait for spring initializing finished"
+        run: sleep 10s
+
+      - name: "Test: Check service status on test port"
+        uses: pavelsaman/website-check@v2.3
+        with:
+          url: http://127.0.0.1:8080/status
+          status_code: 200
+          redirect: true
+
+      - name: "Test: Terminate test process"
+        run: sudo fuser -k 8080/tcp
+
+      # Kill previous java process working on release port
+      - name: Kill previous java process working on release port
+        run: sudo fuser -k 5000/tcp
+
+      # Deploy Downloaded jar file to release port
+      - name: Deploy downloaded jar file to release port
+        run: sudo nohup java -jar ${{ steps.download.outputs.FILE }} --server.port=5000 1>${{ steps.download.outputs.FILE }}.log 2>${{ steps.download.outputs.FILE }}_error.log &
+
+      # Wait for release deployment finished
+      - name: Wait for spring initializing finished
+        run: sleep 10s
+
+      # Check API status on release port
+      - name: "Check service status on release port"
+        uses: pavelsaman/website-check@v2.3
+        with:
+          url: http://127.0.0.1:5000/status
+          status_code: 200
+          redirect: true

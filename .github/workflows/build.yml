@@ -1,9 +1,6 @@
 name: Build and Test
 
 on:
-  push:
-    branches:
-      - production
   pull_request:
     branches:
       - production
@@ -23,7 +20,7 @@ jobs:
           distribution: 'oracle'
           java-version: 17
 
-      - name: Cache Load Gradle
+      - name: Gradle Cache Load
         uses: actions/cache@v3
         with:
           path: ~/.gradle
@@ -35,14 +32,40 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew build --info
 
-      - name: Cache Save Gradle
+      - name: Gradle Cache Save
         uses: actions/cache@v3
         with:
           path: ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      # Restore cache for dependencies
+      - name: AzureCLI Cache Load
+        uses: actions/cache@v3
         with:
-          artifact-name: ${{ github.event.pull_request.head.repo.name }}-${{ github.run_id }}
-          path: build/libs/*.jar
+          path: /usr/bin/az
+          key: azure-cli-dependency-cache
+
+      # Install azure-cli
+      - name: Download and Install azure-cli
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      # Build the application and upload to Azure Storage
+      - name: Upload JAR to Azure Storage
+        run: |
+          FILE=$(find build/libs -name '*.jar' | grep -v 'plain')
+          if [ -z "$FILE" ]; then
+            echo "Plain jar file not found"
+            exit 1
+          elif az storage blob exists --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" --name "${FILE}" --output none; then
+            az storage blob upload-batch --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --destination "${{ secrets.AZURE_STORAGE_CONTAINER }}" --source build/libs --pattern "*.jar" --overwrite
+          else
+            az storage blob upload-batch --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --destination "${{ secrets.AZURE_STORAGE_CONTAINER }}" --source build/libs --pattern "*.jar"
+          fi
+
+      # Save cache for dependencies
+      - name: AzureCLI Cache Save
+        uses: actions/cache@v3
+        with:
+          path: /usr/bin/az
+          key: azure-cli-dependency-cache
